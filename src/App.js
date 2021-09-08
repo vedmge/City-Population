@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from "./components/Header";
+import Autocomplete from "./components/Autocomplete";
+import { useState } from 'react'
+import Result from "./components/Result";
 
 function App() {
+  const [city1, setCity1] = useState(null)
+  const [city2, setCity2] = useState(null)
+
+  const cityClicked = (cityLink, setter) => {
+    fetch(cityLink)
+      .then(res => res.json())
+      .then(res => ({
+        name: res.full_name,
+        population: res.population
+      }))
+      .then(city => setter(city))
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Header />
+      <div style={{display: "flex"}}>
+        <Autocomplete onCityClick={cityClicked} setter={setCity1} />
+        <Autocomplete onCityClick={cityClicked} setter={setCity2} />
+      </div>
+      <Result city1={city1} city2={city2} />
     </div>
   );
 }
